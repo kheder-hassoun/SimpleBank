@@ -1,0 +1,52 @@
+﻿@model SimpleBank.Models.Account
+
+@{
+    ViewData["Title"] = "Edit Account";
+    // Set the ApplicationUserId passed from the controller to the view
+    var applicationUserId = ViewData["ApplicationUserId"];
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label for="AccountNumber">Account Number</label>
+        <input type="text" class="form-control" id="AccountNumber" name="AccountNumber" required maxlength="20" value="@Model?.AccountNumber" readonly />
+    </div>
+
+    <div class="form-group">
+        <label for="AccountType">Account Type</label>
+        <input type="text" class="form-control" id="AccountType" name="AccountType" required value="@Model?.AccountType" />
+        @if (ViewData.ModelState["AccountType"]?.Errors.Count > 0)
+        {
+            <div class="text-danger">
+                @foreach (var error in ViewData.ModelState["AccountType"].Errors)
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="Balance">Balance</label>
+        <input type="number" class="form-control" id="Balance" name="Balance" required value="@Model?.Balance" />
+        @if (ViewData.ModelState["Balance"]?.Errors.Count > 0)
+        {
+            <div class="text-danger">
+                @foreach (var error in ViewData.ModelState["Balance"].Errors)
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+    </div>
+
+    <input type="hidden" name="ApplicationUserId" value="@applicationUserId" />
+
+    <button type="submit" class="btn btn-primary mt-2">Save Changes</button>
+</form>
+
+<div class="mt-3">
+    <a href="@Url.Action("Index", "Account")" class="btn btn-secondary">Back to Accounts</a>
+</div>

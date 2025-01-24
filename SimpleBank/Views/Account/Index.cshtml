@@ -1,0 +1,43 @@
+﻿@model IEnumerable<SimpleBank.Models.Account>
+
+@{
+    ViewData["Title"] = "My Accounts";
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="mb-4">
+        <a href="@Url.Action("Create", "Account")" class="btn btn-primary">Create New Account</a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Account Type</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var account in Model)
+                {
+                    <tr>
+                        <td>@account.AccountType</td>
+                        <td>@account.Balance.ToString("C")</td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Account", new { id = account.Id })" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="@Url.Action("Delete", "Account", new { id = account.Id })" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No accounts available. <a href="@Url.Action("Create", "Account")">Create a new account</a>.</p>
+    }
+</div>

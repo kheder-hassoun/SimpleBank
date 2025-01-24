@@ -1,0 +1,115 @@
+﻿@model List<SimpleBank.Models.Account> // Pass the list of accounts to the view
+@{
+    ViewData["Title"] = "Transaction";
+}
+
+<h2>Transaction</h2>
+
+<!-- Dropdown to select an account -->
+<div>
+    <label for="accountSelect">Select Account:</label>
+    <select id="accountSelect" class="form-control" required>
+        <option value="">-- Select Account --</option>
+        @foreach (var account in Model)
+        {
+            <option value="@account.Id">@account.AccountNumber</option>
+        }
+    </select>
+</div>
+
+<!-- Buttons for each action -->
+<div class="mt-4">
+    <button id="withdrawButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#withdrawModal" disabled>Withdraw</button>
+    <button id="depositButton" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#depositModal" disabled>Deposit</button>
+    <button id="transferButton" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#transferModal" disabled>Transfer</button>
+</div>
+
+
+<!-- Modal for Withdraw -->
+<div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-action="Withdraw">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="withdrawModalLabel">Withdraw</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="accountId" id="withdrawAccountId" />
+                    <label for="withdrawAmount">Amount:</label>
+                    <input type="number" class="form-control" name="amount" id="withdrawAmount" step="0.01" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Confirm Withdraw</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Deposit -->
+<div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-action="Deposit">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="depositModalLabel">Deposit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="accountId" id="depositAccountId" />
+                    <label for="depositAmount">Amount:</label>
+                    <input type="number" class="form-control" name="amount" id="depositAmount" step="0.01" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Confirm Deposit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Transfer -->
+<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-action="Transfer">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transferModalLabel">Transfer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="fromAccountId" id="transferFromAccountId" />
+                    <label for="toAccountNumber">To Account Number:</label>
+                    <input type="text" class="form-control" name="toAccountNumber" id="toAccountNumber" required />
+                    <label for="transferAmount" class="mt-2">Amount:</label>
+                    <input type="number" class="form-control" name="amount" id="transferAmount" step="0.01" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Confirm Transfer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script to update hidden account ID fields and enable buttons -->
+<script>
+    document.getElementById('accountSelect').addEventListener('change', function () {
+        var selectedAccountId = this.value;
+
+        // Update hidden fields in the modals
+        document.getElementById('withdrawAccountId').value = selectedAccountId;
+        document.getElementById('depositAccountId').value = selectedAccountId;
+        document.getElementById('transferFromAccountId').value = selectedAccountId;
+
+        // Enable or disable buttons based on selection
+        var buttons = ['withdrawButton', 'depositButton', 'transferButton'];
+        buttons.forEach(function (buttonId) {
+            document.getElementById(buttonId).disabled = !selectedAccountId;
+        });
+    });
+</script>
