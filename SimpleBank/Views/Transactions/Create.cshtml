@@ -20,7 +20,8 @@
                     {
                         <option value="@account.Id"
                                 data-account-type="@account.AccountType"
-                                data-balance="@account.Balance.ToString("F2")">
+                                data-balance="@account.Balance.ToString("F2")"
+                                selected="@(ViewBag.SelectedAccountId != null && ViewBag.SelectedAccountId == account.Id ? "selected" : null)">
                             @account.AccountNumber - @account.AccountType
                         </option>
                     }
@@ -82,6 +83,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" asp-action="Withdraw">
+                    <input type="hidden" name="returnAccountId" value="@ViewBag.SelectedAccountId" />
                     <div class="modal-body">
                         <input type="hidden" name="accountId" id="withdrawAccountId" />
                         <div class="form-floating mb-4">
@@ -110,6 +112,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" asp-action="Deposit">
+                    <input type="hidden" name="returnAccountId" value="@ViewBag.SelectedAccountId" />
                     <div class="modal-body">
                         <input type="hidden" name="accountId" id="depositAccountId" />
                         <div class="form-floating mb-4">
@@ -138,6 +141,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" asp-action="Transfer">
+                    <input type="hidden" name="returnAccountId" value="@ViewBag.SelectedAccountId" />
                     <div class="modal-body">
                         <input type="hidden" name="fromAccountId" id="transferFromAccountId" />
                         <div class="form-floating mb-4">
@@ -234,10 +238,54 @@
     }
 </style>
 <script>
+    //init <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto-select account if specified
+        const selectedAccountId = @(ViewBag.SelectedAccountId != null ? ViewBag.SelectedAccountId : 0);
+        if (selectedAccountId) {
+            const select = document.getElementById('accountSelect');
+            select.value = selectedAccountId;
+            select.dispatchEvent(new Event('change'));
+        }
+
+        // Show messages from TempData
+    @if (ViewBag.Message != null)
+    {
+        <text>
+                    Toastify({
+                        text: "@ViewBag.Message",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#10B981",
+                }).showToast();
+        </text>
+    }
+
+    @if (ViewData.ModelState.ErrorCount > 0)
+    {
+        <text>
+                    Toastify({
+                        text: "@Html.Raw(ViewData.ModelState.First().Value.Errors.First().ErrorMessage)",
+                    duration: 5000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#EF4444",
+                }).showToast();
+        </text>
+    }
+    });
+</script>
+<script>
     document.getElementById('accountSelect').addEventListener('change', function () {
         const selectedOption = this.options[this.selectedIndex];
         const accountDetails = document.getElementById('accountDetails');
         const selectedAccountId = this.value;
+
+        // Reset error messages
+        document.querySelectorAll('.text-danger').forEach(e => e.remove());
 
         if (selectedAccountId) {
             // Show account details

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SimpleBank.Models; // Adjust based on your project namespace
+using SimpleBank.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,117 +17,105 @@ namespace SimpleBank.Controllers
             _context = context;
         }
 
-        // GET: Transactions/Create (Deposit/Withdraw/Transfer)
-        public async Task<IActionResult> Create()
+        // GET: Transactions/Create
+        public async Task<IActionResult> Create(int? accountId)
         {
-            var userId = User.Identity.Name; // Gets the current logged-in user's username or email
+            var userId = User.Identity.Name;
             var accounts = await _context.Accounts
                 .Where(a => a.ApplicationUser.UserName == userId)
                 .ToListAsync();
 
+            // Preserve selected account through redirects
+            if (accountId.HasValue)
+            {
+                ViewBag.SelectedAccountId = accountId.Value;
+                TempData["SelectedAccountId"] = accountId.Value;
+            }
+            else if (TempData["SelectedAccountId"] is int savedId)
+            {
+                ViewBag.SelectedAccountId = savedId;
+                TempData.Keep("SelectedAccountId");
+            }
+
+            // Handle messages and errors
+            if (TempData["Message"] != null)
+            {
+                ViewBag.Message = TempData["Message"];
+            }
+            if (TempData["Error"] != null)
+            {
+                ModelState.AddModelError("", TempData["Error"].ToString());
+            }
+
             return View(accounts);
         }
 
-        // GET: Transactions/Create (Deposit/Withdraw/Transfer)
-        public async Task<IActionResult> Withdraw()
-        {
-            var userId = User.Identity.Name; // Gets the current logged-in user's username or email
-            var accounts = await _context.Accounts
-                .Where(a => a.ApplicationUser.UserName == userId)
-                .ToListAsync();
-
-            return View(accounts);
-        }
-        // POST: Transactions/Withdraw
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Withdraw(int accountId, decimal amount)
         {
             if (amount <= 0)
             {
-                ModelState.AddModelError("", "Amount must be greater than zero.");
-                return View("Create");
+                TempData["Error"] = "Amount must be greater than zero.";
+                return RedirectToAction("Create", new { accountId });
             }
 
             var account = await _context.Accounts.FindAsync(accountId);
 
             if (account == null)
             {
-                ModelState.AddModelError("", "Account not found.");
-                return View("Create");
+                TempData["Error"] = "Account not found.";
+                return RedirectToAction("Create");
             }
 
             if (account.Balance < amount)
             {
-                ModelState.AddModelError("", "Insufficient balance.");
-                return View("Create");
+                TempData["Error"] = "Insufficient balance.";
+                return RedirectToAction("Create", new { accountId });
             }
 
-            // Deduct the amount and save
             account.Balance -= amount;
             _context.Update(account);
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Withdrawal successful.";
-            return RedirectToAction("Create", "Transactions");
+            return RedirectToAction("Create", new { accountId });
         }
-        // GET: Transactions/Create (Deposit/Withdraw/Transfer)
-        public async Task<IActionResult> Deposit()
-        {
-            var userId = User.Identity.Name; // Gets the current logged-in user's username or email
-            var accounts = await _context.Accounts
-                .Where(a => a.ApplicationUser.UserName == userId)
-                .ToListAsync();
 
-            return View(accounts);
-        }
-        // POST: Transactions/Deposit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Deposit(int accountId, decimal amount)
         {
             if (amount <= 0)
             {
-                ModelState.AddModelError("", "Amount must be greater than zero.");
-                return View("Create");
+                TempData["Error"] = "Amount must be greater than zero.";
+                return RedirectToAction("Create", new { accountId });
             }
 
             var account = await _context.Accounts.FindAsync(accountId);
 
             if (account == null)
             {
-                ModelState.AddModelError("", "Account not found.");
-                return View("Create");
+                TempData["Error"] = "Account not found.";
+                return RedirectToAction("Create");
             }
 
-            // Add the amount and save
             account.Balance += amount;
             _context.Update(account);
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Deposit successful.";
-            return RedirectToAction("Create", "Transactions");
-            //return RedirectToAction("Index", "Account");
+            return RedirectToAction("Create", new { accountId });
         }
-        // GET: Transactions/Create (Deposit/Withdraw/Transfer)
-        public async Task<IActionResult> Transfer()
-        {
-            var userId = User.Identity.Name; // Gets the current logged-in user's username or email
-            var accounts = await _context.Accounts
-                .Where(a => a.ApplicationUser.UserName == userId)
-                .ToListAsync();
 
-            return View(accounts);
-        }
-        // POST: Transactions/Transfer
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Transfer(int fromAccountId, string toAccountNumber, decimal amount)
         {
             if (amount <= 0)
             {
-                ModelState.AddModelError("", "Amount must be greater than zero.");
-                return View("Create");
+                TempData["Error"] = "Amount must be greater than zero.";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
             }
 
             var fromAccount = await _context.Accounts.FindAsync(fromAccountId);
@@ -135,17 +123,16 @@ namespace SimpleBank.Controllers
 
             if (fromAccount == null || toAccount == null)
             {
-                ModelState.AddModelError("", "Invalid account(s).");
-                return View("Create");
+                TempData["Error"] = "Invalid account(s).";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
             }
 
             if (fromAccount.Balance < amount)
             {
-                ModelState.AddModelError("", "Insufficient balance.");
-                return View("Create");
+                TempData["Error"] = "Insufficient balance.";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
             }
 
-            // Perform transfer
             fromAccount.Balance -= amount;
             toAccount.Balance += amount;
 
@@ -154,8 +141,7 @@ namespace SimpleBank.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Transfer successful.";
-            return RedirectToAction("Create", "Transactions");
-            // return RedirectToAction("Index", "Account");
+            return RedirectToAction("Create", new { accountId = fromAccountId });
         }
     }
 }

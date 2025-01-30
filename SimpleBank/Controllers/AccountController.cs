@@ -114,6 +114,8 @@ namespace SimpleBank.Controllers
             return View(account);
         }
 
+
+
         // GET: Account/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -133,20 +135,34 @@ namespace SimpleBank.Controllers
             return View(account);
         }
 
+
         // POST: Account/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var account = await _context.Accounts.FindAsync(id);
-            if (account != null && account.ApplicationUser.UserName == User.Identity.Name)
+            var account = await _context.Accounts
+                .Include(a => a.ApplicationUser)
+                .FirstOrDefaultAsync(a => a.Id == id && a.ApplicationUser.UserName == User.Identity.Name);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            try
             {
                 _context.Accounts.Remove(account);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Account deleted successfully";
             }
+            catch (DbUpdateException)
+            {
+                TempData["ErrorMessage"] = "Error deleting account. Please try again.";
+            }
+
             return RedirectToAction(nameof(Index));
         }
-
         private bool AccountExists(int id)
         {
             return _context.Accounts.Any(e => e.Id == id);
