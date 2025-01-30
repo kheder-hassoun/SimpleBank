@@ -57,36 +57,10 @@ body {
 
 /* Footer */
 .footer {
-    background: var(--dark-gradient);
     position: relative;
+    z-index: 1;
 }
 
-.wave-divider {
-    position: absolute;
-    top: -100px;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-}
-
-.wave-divider svg {
-    position: relative;
-    display: block;
-    width: calc(100% + 1.3px);
-    height: 100px;
-    animation: wave 8s linear infinite;
-}
-
-.wave-divider path {
-    fill: #f8f9fa;
-}
-
-@keyframes wave {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(-25%); }
-    100% { transform: translateX(0); }
-}
 
 .btn-icon {
     width: 40px;
@@ -95,13 +69,37 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    border: 2px solid transparent;
 }
 
-.btn-icon:hover {
-    transform: translateY(-3px);
-    background-color: var(--teal) !important;
-    border-color: var(--teal) !important;
+    .btn-icon:hover {
+        transform: translateY(-3px);
+        background: rgba(255,255,255,0.1) !important;
+        border-color: rgba(255,255,255,0.3) !important;
+    }
+
+.hover-underline {
+    position: relative;
+    padding: 0.5rem 0;
 }
+
+    .hover-underline::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: white;
+        transition: width 0.3s ease;
+    }
+
+    .hover-underline:hover::after {
+        width: 100%;
+    }
+
+
+
 
 /* Enhanced Card Styles */
 .card {

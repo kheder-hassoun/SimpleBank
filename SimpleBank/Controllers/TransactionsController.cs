@@ -69,7 +69,7 @@ namespace SimpleBank.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Withdrawal successful.";
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Create", "Transactions");
         }
         // GET: Transactions/Create (Deposit/Withdraw/Transfer)
         public async Task<IActionResult> Deposit()
@@ -106,7 +106,8 @@ namespace SimpleBank.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Deposit successful.";
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Create", "Transactions");
+            //return RedirectToAction("Index", "Account");
         }
         // GET: Transactions/Create (Deposit/Withdraw/Transfer)
         public async Task<IActionResult> Transfer()
@@ -153,7 +154,8 @@ namespace SimpleBank.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Transfer successful.";
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Create", "Transactions");
+            // return RedirectToAction("Index", "Account");
         }
     }
 }
