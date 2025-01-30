@@ -4,33 +4,45 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SimpleBank</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Custom CSS (Optional) -->
+
+    <!-- Consolidated Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+<body class="d-flex flex-column min-vh-100">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary fixed-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">SimpleBank</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand fw-bold" href="/Home/Dashboard">
+                <i class="fa-solid fa-building-columns me-2"></i>SimpleBank
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Access/Logout">Logout</a>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link hover-underline" href="/Access/Login">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
                         </li>
                     }
                     else
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Access/Login">Login</a>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link hover-underline" href="/Access/Login">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Access/Register">Register</a>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link hover-underline" href="/Access/Register">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                            </a>
                         </li>
                     }
                 </ul>
@@ -38,15 +50,47 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <!-- Main Content -->
+    <main class="flex-grow-1" style="padding-top: 80px;">
         @RenderBody()
-    </div>
+    </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <span class="text-muted">© 2025 SimpleBank. All rights reserved.</span>
+    <!-- Footer -->
+    <footer class="footer mt-auto bg-gradient-dark">
+    
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-md-6 text-center text-md-start">
+                    <h4 class="text-white mb-4">
+                        <i class="fa-solid fa-building-columns me-2"></i>SimpleBank
+                    </h4>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-md-start gap-3">
+                        <a href="#" class="text-light">About Us</a>
+                        <a href="#" class="text-light">Careers</a>
+                        <a href="#" class="text-light">Privacy Policy</a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="social-icons mb-4">
+                        <a href="#" class="btn btn-icon btn-lg btn-light rounded-circle mx-1">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="btn btn-icon btn-lg btn-light rounded-circle mx-1">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-icon btn-lg btn-light rounded-circle mx-1">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-icon btn-lg btn-light rounded-circle mx-1">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                    <span class="text-muted">© 2025 SimpleBank. developed by kheder.</span>
+                </div>
+            </div>
         </div>
     </footer>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
@@ -55,5 +99,6 @@
     <!-- Validation Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
 </body>
 </html>

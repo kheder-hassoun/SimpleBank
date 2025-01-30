@@ -1,0 +1,184 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid px-4 py-5">
+    <!-- Animated Header -->
+    <header class="text-center mb-5 animate__animated animate__slideInDown animate__faster">
+        <h1 class="display-4 fw-bold text-gradient">Welcome to Simple Bank</h1>
+        <p class="lead text-muted mt-3 animate__animated animate__fadeIn animate__delay-1s">Your trusted partner in financial excellence</p>
+    </header>
+
+    <!-- Cards Section -->
+    <div class="row g-4">
+        <!-- Account Management Card -->
+        <div class="col-lg-6 animate__animated animate__zoomIn animate__delay-1s">
+            <div class="card card-hover bg-gradient-primary shadow-lg rounded-4 border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape bg-white rounded-3 p-3 me-4">
+                            <i class="fas fa-wallet fa-3x text-primary"></i>
+                        </div>
+                        <div>
+                            <h2 class="h1 text-white mb-0">Accounts</h2>
+                            <p class="text-white-50 mb-0">Manage your financial portfolios</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Account")" class="btn btn-light btn-lg rounded-pill px-4 hover-transform">
+                            Explore <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Card -->
+        <div class="col-lg-6 animate__animated animate__zoomIn animate__delay-1s">
+            <div class="card card-hover bg-gradient-success shadow-lg rounded-4 border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape bg-white rounded-3 p-3 me-4">
+                            <i class="fas fa-exchange-alt fa-3x text-success"></i>
+                        </div>
+                        <div>
+                            <h2 class="h1 text-white mb-0">Transactions</h2>
+                            <p class="text-white-50 mb-0">Move funds seamlessly</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Create", "Transactions")" class="btn btn-light btn-lg rounded-pill px-4 hover-transform">
+                            Explore <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="text-center mt-5 animate__animated animate__fadeInUp animate__delay-1s">
+        <h3 class="h4 text-muted mb-4">Quick Actions</h3>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="@Url.Action("Create", "Account")" class="btn btn-new-account btn-lg rounded-pill px-4 action-btn">
+                <i class="fas fa-plus-circle me-2"></i>New Account
+            </a>
+            <a href="@Url.Action("Create", "Transactions")" class="btn btn-deposit btn-lg rounded-pill px-4 action-btn">
+                <i class="fas fa-arrow-up me-2"></i>Deposit
+            </a>
+            <a href="@Url.Action("Create", "Transactions")" class="btn btn-withdraw btn-lg rounded-pill px-4 action-btn">
+                <i class="fas fa-arrow-down me-2"></i>Withdraw
+            </a>
+            <a href="@Url.Action("Create", "Transactions")" class="btn btn-transfer btn-lg rounded-pill px-4 action-btn">
+                <i class="fas fa-random me-2"></i>Transfer
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom Styles */
+    .text-gradient {
+        background: linear-gradient(45deg, #6366F1, #8B5CF6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+           background-size: 200% 200%;
+        animation: gradientShift 6s ease infinite;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #10B981, #3B82F6);
+    }
+
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25)!important;
+    }
+
+    .icon-shape {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-hover:hover .icon-shape {
+        transform: rotate(15deg) scale(1.1);
+        background: rgba(255,255,255,0.9)!important;
+    }
+
+    /* Quick Action Buttons */
+    .btn-new-account {
+        background: linear-gradient(135deg, #8B5CF6, #6366F1);
+        border: none;
+        color: white!important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-deposit {
+        background: linear-gradient(135deg, #10B981, #3B82F6);
+        border: none;
+        color: white!important;
+    }
+
+    .btn-withdraw {
+        background: linear-gradient(135deg, #EF4444, #F59E0B);
+        border: none;
+        color: white!important;
+    }
+
+    .btn-transfer {
+        background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+        border: none;
+        color: white!important;
+    }
+
+    .action-btn {
+        transition: all 0.3s ease;
+        border-width: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px -5px rgba(0,0,0,0.2);
+    }
+
+    .action-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255,255,255,0.1);
+        transform: rotate(45deg) translate(-20%, 100%);
+        transition: all 0.4s ease;
+    }
+
+    .action-btn:hover::after {
+        transform: rotate(45deg) translate(20%, -100%);
+    }
+
+    /* Animations */
+    @@keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .hover-transform {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-transform:hover {
+        transform: translateX(5px);
+    }
+</style>

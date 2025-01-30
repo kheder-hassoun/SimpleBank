@@ -34,7 +34,7 @@ namespace SimpleBank.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Dashboard", "Home");
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -63,7 +63,7 @@ namespace SimpleBank.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Dashboard", "Home");
                 }
 
                 foreach (var error in result.Errors)

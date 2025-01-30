@@ -1,21 +1,108 @@
 ﻿@model SimpleBank.ViewModels.LoginViewModel
 
-<h2>Login</h2>
+<div class="container-fluid px-4 py-5">
+    <div class="row justify-content-center animate__animated animate__fadeIn">
+        <div class="col-md-6 col-lg-5">
+            <!-- Login Card -->
+            <div class="card card-hover shadow-lg rounded-4 border-0">
+                <div class="card-body p-5">
+                    <!-- Header -->
+                    <header class="text-center mb-5">
+                        <h1 class="display-6 fw-bold text-gradient mb-3">Welcome Back</h1>
+                        <p class="text-muted">Sign in to your SimpleBank account</p>
+                    </header>
 
-<form asp-action="Login" method="post">
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+                    <!-- Login Form -->
+                    <form asp-action="Login" method="post">
+                        <!-- Email Input -->
+                        <div class="form-floating mb-4">
+                            <input asp-for="Email" class="form-control form-control-lg"
+                                   placeholder="name@example.com" />
+                            <label asp-for="Email" class="form-label text-muted"></label>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="form-floating mb-4">
+                            <input asp-for="Password" type="password"
+                                   class="form-control form-control-lg"
+                                   placeholder="Password" />
+                            <label asp-for="Password" class="form-label text-muted"></label>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Remember Me Checkbox -->
+                        <div class="form-check mb-4">
+                            <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                            <label asp-for="RememberMe" class="form-check-label text-muted"></label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                Sign In <i class="fas fa-arrow-right-to-bracket ms-2"></i>
+                            </button>
+                        </div>
+
+                        <!-- Additional Links -->
+                        <div class="text-center text-muted">
+                            <p class="mb-1">
+                                New here?
+                                <a href="@Url.Action("Register", "Access")" class="text-decoration-none text-primary">
+                                    Create an account
+                                </a>
+                            </p>
+                            <p class="mb-0">
+                                <a href="#" class="text-decoration-none text-primary">
+                                    Forgot password?
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="form-group form-check">
-        <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
-        <label asp-for="RememberMe" class="form-check-label"></label>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+</div>
+
+<style>
+    .card {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .form-control {
+        border-radius: 0.75rem;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+    .form-check-input:checked {
+        background-color: #6366F1;
+        border-color: #6366F1;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, #6366F1, #8B5CF6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6366F1, #8B5CF6);
+        border: none;
+        padding: 1rem 2rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+        }
+</style>
