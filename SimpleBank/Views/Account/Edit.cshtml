@@ -30,8 +30,13 @@
 
                         <!-- Account Type -->
                         <div class="form-floating mb-4">
-                            <input type="text" class="form-control" id="AccountType"
-                                   name="AccountType" required value="@Model?.AccountType" />
+                            <select class="form-select" id="AccountType" name="AccountType" required>
+                                <option value="">-- Select Account Type --</option>
+                                <option value="Savings" selected="@(Model?.AccountType == "Savings" ? "selected" : null)">Savings</option>
+                                <option value="Checking" selected="@(Model?.AccountType == "Checking" ? "selected" : null)">Checking</option>
+                                <option value="Business" selected="@(Model?.AccountType == "Business" ? "selected" : null)">Business</option>
+                                <option value="Investment" selected="@(Model?.AccountType == "Investment" ? "selected" : null)">Investment</option>
+                            </select>
                             <label for="AccountType" class="text-muted">
                                 <i class="fas fa-credit-card me-2"></i>Account Type
                             </label>
