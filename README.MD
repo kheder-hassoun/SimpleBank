@@ -1,6 +1,4 @@
-﻿
-```markdown
-# SimpleBank 🏦
+﻿# SimpleBank 🏦
 
 
 
@@ -53,7 +51,7 @@
 - **Git**: Version control
 - **Azure (Optional)**: Cloud hosting and deployment
 
----
+
 
 ## Getting Started 🚀
 
