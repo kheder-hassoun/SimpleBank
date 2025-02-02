@@ -1,0 +1,143 @@
+﻿@model List<SimpleBank.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Transaction History";
+}
+
+<div class="container py-4 animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="display-5 fw-bold text-primary">
+            <i class="fas fa-file-invoice-dollar me-3"></i>Account History
+        </h2>
+        <a href="@Url.Action("Create")" class="btn btn-purple btn-lg">
+            <i class="fas fa-arrow-left me-2"></i>Back to Transactions
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white py-3">
+            <div class="row fw-semibold">
+                <div class="col-md-3">Account: @ViewBag.AccountNumber</div>
+                <div class="col-md-3">Total Transactions: @Model.Count</div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search transactions..." id="searchInput">
+                        <button class="btn btn-light" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                @foreach (var transaction in Model)
+                {
+                    <div class="list-group-item list-group-item-action hover-highlight">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <div class="d-flex align-items-center">
+                                    @switch (transaction.TransactionType.ToLower())
+                                    {
+                                        case "withdrawal":
+                                            <i class="fas fa-arrow-down text-danger fs-4 me-3"></i>
+                                            break;
+                                        case "deposit":
+                                            <i class="fas fa-arrow-up text-success fs-4 me-3"></i>
+                                            break;
+                                        case "transfer":
+                                            <i class="fas fa-exchange-alt text-warning fs-4 me-3"></i>
+                                            break;
+                                    }
+                                    <div>
+                                        <div class="fw-bold">@transaction.TransactionType</div>
+                                        <small class="text-muted">@transaction.Date.ToString("MMM dd, yyyy hh:mm tt")</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="text-secondary">From</div>
+                                <span class="badge bg-light text-dark">@transaction.SourceAccountNumber</span>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="text-secondary">To</div>
+                                <span class="badge bg-light text-dark">@transaction.DestinationAccountNumber</span>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <span class="@GetAmountClass(transaction.TransactionType) fs-5">
+                                        @transaction.Amount.ToString("C")
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="text-truncate" data-bs-toggle="tooltip"
+                                     title="@transaction.Description">
+                                    <i class="fas fa-comment-alt me-2 text-muted"></i>
+                                    @transaction.Description
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetAmountClass(string transactionType)
+    {
+        return transactionType.ToLower() switch
+        {
+            "withdrawal" => "text-danger",
+            "deposit" => "text-success",
+            _ => "text-dark"
+        };
+    }
+}
+
+<style>
+    .hover-highlight:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+        transition: all 0.3s ease;
+    }
+
+    .btn-purple {
+        background-color: #6f42c1;
+        color: white;
+        border: none;
+    }
+
+    .btn-purple:hover {
+        background-color: #59359a;
+        color: white;
+    }
+
+    .badge {
+        padding: 0.5em 0.8em;
+        border-radius: 10px;
+    }
+</style>
+
+
+    <script>
+        // Simple search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.list-group-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(t => new bootstrap.Tooltip(t));
+    </script>

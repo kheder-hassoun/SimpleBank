@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Transactions;
 
 namespace SimpleBank.Models
 {
@@ -11,7 +10,7 @@ namespace SimpleBank.Models
 
         [Required(ErrorMessage = "Transaction type is required.")]
         [MaxLength(50, ErrorMessage = "Transaction type cannot exceed 50 characters.")]
-        public string TransactionType { get; set; } // e.g., Deposit, Withdrawal
+        public string TransactionType { get; set; }
 
         [Required(ErrorMessage = "Amount is required.")]
         [Column(TypeName = "decimal(18,2)")]
@@ -22,11 +21,23 @@ namespace SimpleBank.Models
         [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }
 
+        // New fields
+        [Display(Name = "Source Account")]
+        [MaxLength(20, ErrorMessage = "Account number cannot exceed 20 characters.")]
+        public string? SourceAccountNumber { get; set; }
+
+        [Display(Name = "Destination Account")]
+        [MaxLength(20, ErrorMessage = "Account number cannot exceed 20 characters.")]
+        public string? DestinationAccountNumber { get; set; }
+
+        [Required(ErrorMessage = "Description is required.")]
+        [MaxLength(255, ErrorMessage = "Description cannot exceed 255 characters.")]
+        public string Description { get; set; }
+
         // Foreign key to Account
         [Required(ErrorMessage = "AccountId is required.")]
         public int AccountId { get; set; }
 
-        //[ForeignKey(nameof(AccountId))]
         public Account Account { get; set; }
     }
 }

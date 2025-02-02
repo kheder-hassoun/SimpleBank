@@ -25,7 +25,6 @@ namespace SimpleBank.Controllers
                 .Where(a => a.ApplicationUser.UserName == userId)
                 .ToListAsync();
 
-            // Preserve selected account through redirects
             if (accountId.HasValue)
             {
                 ViewBag.SelectedAccountId = accountId.Value;
@@ -37,26 +36,25 @@ namespace SimpleBank.Controllers
                 TempData.Keep("SelectedAccountId");
             }
 
-            // Handle messages and errors
-            if (TempData["Message"] != null)
-            {
-                ViewBag.Message = TempData["Message"];
-            }
-            if (TempData["Error"] != null)
-            {
-                ModelState.AddModelError("", TempData["Error"].ToString());
-            }
+            if (TempData["Message"] != null) ViewBag.Message = TempData["Message"];
+            if (TempData["Error"] != null) ModelState.AddModelError("", TempData["Error"].ToString());
 
             return View(accounts);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Withdraw(int accountId, decimal amount)
+        public async Task<IActionResult> Withdraw(int accountId, decimal amount, string description)
         {
             if (amount <= 0)
             {
                 TempData["Error"] = "Amount must be greater than zero.";
+                return RedirectToAction("Create", new { accountId });
+            }
+
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                TempData["Error"] = "Description is required.";
                 return RedirectToAction("Create", new { accountId });
             }
 
@@ -75,7 +73,20 @@ namespace SimpleBank.Controllers
             }
 
             account.Balance -= amount;
+
+            var transaction = new Transaction
+            {
+                TransactionType = "Withdrawal",
+                Amount = amount,
+                Date = DateTime.Now,
+                SourceAccountNumber = account.AccountNumber,
+                DestinationAccountNumber = account.AccountNumber,
+                Description = description,
+                AccountId = accountId
+            };
+
             _context.Update(account);
+            _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Withdrawal successful.";
@@ -84,11 +95,17 @@ namespace SimpleBank.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Deposit(int accountId, decimal amount)
+        public async Task<IActionResult> Deposit(int accountId, decimal amount, string description)
         {
             if (amount <= 0)
             {
                 TempData["Error"] = "Amount must be greater than zero.";
+                return RedirectToAction("Create", new { accountId });
+            }
+
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                TempData["Error"] = "Description is required.";
                 return RedirectToAction("Create", new { accountId });
             }
 
@@ -101,7 +118,20 @@ namespace SimpleBank.Controllers
             }
 
             account.Balance += amount;
+
+            var transaction = new Transaction
+            {
+                TransactionType = "Deposit",
+                Amount = amount,
+                Date = DateTime.Now,
+                SourceAccountNumber = account.AccountNumber,
+                DestinationAccountNumber = account.AccountNumber,
+                Description = description,
+                AccountId = accountId
+            };
+
             _context.Update(account);
+            _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Deposit successful.";
@@ -110,11 +140,17 @@ namespace SimpleBank.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Transfer(int fromAccountId, string toAccountNumber, decimal amount)
+        public async Task<IActionResult> Transfer(int fromAccountId, string toAccountNumber, decimal amount, string description)
         {
             if (amount <= 0)
             {
                 TempData["Error"] = "Amount must be greater than zero.";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
+            }
+
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                TempData["Error"] = "Description is required.";
                 return RedirectToAction("Create", new { accountId = fromAccountId });
             }
 
@@ -136,12 +172,46 @@ namespace SimpleBank.Controllers
             fromAccount.Balance -= amount;
             toAccount.Balance += amount;
 
+            var transaction = new Transaction
+            {
+                TransactionType = "Transfer",
+                Amount = amount,
+                Date = DateTime.Now,
+                SourceAccountNumber = fromAccount.AccountNumber,
+                DestinationAccountNumber = toAccount.AccountNumber,
+                Description = description,
+                AccountId = fromAccountId
+            };
+
             _context.Update(fromAccount);
             _context.Update(toAccount);
+            _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Transfer successful.";
             return RedirectToAction("Create", new { accountId = fromAccountId });
+        }
+
+        // GET: Transactions/History/{accountId}
+        public async Task<IActionResult> History(int accountId)
+        {
+
+            var account = await _context.Accounts.FindAsync(accountId);
+            if (account == null)
+            {
+                TempData["Error"] = "Account not found or you do not have access to this account.";
+                return RedirectToAction("Create");
+            }
+
+            // Fetch all transactions for the selected account
+            var transactions = await _context.Transactions
+                .Where(t => t.AccountId == accountId)
+                .OrderByDescending(t => t.Date)
+                .ToListAsync();
+
+            // Pass the account and transactions to the view
+            ViewBag.AccountNumber = account.AccountNumber;
+            return View(transactions);
         }
     }
 }

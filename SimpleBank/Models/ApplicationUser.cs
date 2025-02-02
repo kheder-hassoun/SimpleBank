@@ -7,5 +7,7 @@ namespace SimpleBank.Models
     {
         // Navigation property: Each user can have multiple accounts
         public ICollection<Account> Accounts { get; set; } = new List<Account>();
+
+
     }
 }

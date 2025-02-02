@@ -1,6 +1,4 @@
-﻿
-```markdown
-# SimpleBank 🏦
+﻿# SimpleBank 🏦
 
 
 

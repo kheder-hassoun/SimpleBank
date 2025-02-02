@@ -70,6 +70,11 @@
                     data-bs-toggle="modal" data-bs-target="#transferModal" disabled>
                 <i class="fas fa-random me-2"></i>Transfer
             </button>
+            <a href="@Url.Action("History", new { accountId = ViewBag.SelectedAccountId })"
+               class="btn btn-history btn-lg rounded-pill px-4 action-btn"
+               id="historyButton">
+                <i class="fas fa-history me-2"></i>Transaction History
+            </a>
         </div>
     </div>
 
@@ -91,6 +96,12 @@
                                    id="withdrawAmount" step="0.01" required />
                             <label for="withdrawAmount">Amount</label>
                         </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description"
+                                   id="Description" step="0.01" required />
+                            <label for="Description">Description</label>
+                        </div>
+                       
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
@@ -119,6 +130,11 @@
                             <input type="number" class="form-control" name="amount"
                                    id="depositAmount" step="0.01" required />
                             <label for="depositAmount">Amount</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description"
+                                   id="Description" step="0.01" required />
+                            <label for="Description">Description</label>
                         </div>
                     </div>
                     <div class="modal-footer border-0">
@@ -154,6 +170,11 @@
                                    id="transferAmount" step="0.01" required />
                             <label for="transferAmount">Amount</label>
                         </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description"
+                                   id="Description" step="0.01" required />
+                            <label for="Description">Description</label>
+                        </div>
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
@@ -169,6 +190,7 @@
 
 <style>
     /* Custom Styles */
+
     .form-select {
         border-radius: 0.75rem;
         border: 1px solid #dee2e6;
@@ -236,6 +258,28 @@
     .text-muted {
         font-size: 0.9rem;
     }
+
+    .btn-history {
+        background-color: #6f42c1;
+        border-color: #6f42c1;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+        .btn-history:hover {
+            background-color: #59359a;
+            border-color: #59359a;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-history i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-history:hover i {
+            transform: rotate(-20deg);
+        }
 </style>
 <script>
     //init <script>
