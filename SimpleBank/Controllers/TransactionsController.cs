@@ -79,6 +79,8 @@ namespace SimpleBank.Controllers
                 TransactionType = "Withdrawal",
                 Amount = amount,
                 Date = DateTime.Now,
+                ScheduledDate = DateTime.Now,
+                Status = "Completed",
                 SourceAccountNumber = account.AccountNumber,
                 DestinationAccountNumber = account.AccountNumber,
                 Description = description,
@@ -124,6 +126,8 @@ namespace SimpleBank.Controllers
                 TransactionType = "Deposit",
                 Amount = amount,
                 Date = DateTime.Now,
+                ScheduledDate = DateTime.Now,
+                Status = "Completed",
                 SourceAccountNumber = account.AccountNumber,
                 DestinationAccountNumber = account.AccountNumber,
                 Description = description,
@@ -177,6 +181,8 @@ namespace SimpleBank.Controllers
                 TransactionType = "Transfer",
                 Amount = amount,
                 Date = DateTime.Now,
+                ScheduledDate = DateTime.Now,
+                Status =   "Completed",
                 SourceAccountNumber = fromAccount.AccountNumber,
                 DestinationAccountNumber = toAccount.AccountNumber,
                 Description = description,
@@ -213,5 +219,73 @@ namespace SimpleBank.Controllers
             ViewBag.AccountNumber = account.AccountNumber;
             return View(transactions);
         }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ScheduledTransfer(int fromAccountId, string toAccountNumber, decimal amount, string description, DateTime scheduledDate)
+        {
+            // Validate amount
+            if (amount <= 0)
+            {
+                TempData["Error"] = "Amount must be greater than zero.";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
+            }
+
+            // Validate description
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                TempData["Error"] = "Description is required.";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
+            }
+
+            // Validate scheduled date
+            if (scheduledDate <= DateTime.Now)
+            {
+                TempData["Error"] = "Scheduled date must be in the future.";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
+            }
+
+            // Fetch accounts
+            var fromAccount = await _context.Accounts.FindAsync(fromAccountId);
+            var toAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == toAccountNumber);
+
+            // Validate accounts
+            if (fromAccount == null || toAccount == null)
+            {
+                TempData["Error"] = "Invalid account(s).";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
+            }
+
+            // Validate balance (optional: you can skip this for scheduled transactions)
+            if (fromAccount.Balance < amount)
+            {
+                TempData["Error"] = "Insufficient balance.";
+                return RedirectToAction("Create", new { accountId = fromAccountId });
+            }
+
+            // Create the scheduled transaction
+            var transaction = new Transaction
+            {
+                TransactionType = "Transfer",
+                Amount = amount,
+                Date = DateTime.Now, // Current date (when the transaction is created)
+                ScheduledDate = scheduledDate, // Future date (when the transaction should be executed)
+                Status = "Pending", // Mark as pending until processed by the background service
+                SourceAccountNumber = fromAccount.AccountNumber,
+                DestinationAccountNumber = toAccount.AccountNumber,
+                Description = description,
+                AccountId = fromAccountId
+            };
+
+            // Save the transaction
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = $"Transfer scheduled successfully for {scheduledDate.ToString("MMM dd, yyyy hh:mm tt")}.";
+            return RedirectToAction("Create", new { accountId = fromAccountId });
+        }
+
     }
 }

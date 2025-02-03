@@ -70,6 +70,12 @@
                     data-bs-toggle="modal" data-bs-target="#transferModal" disabled>
                 <i class="fas fa-random me-2"></i>Transfer
             </button>
+            <button id="scheduleTransferButton" type="button"
+                    class="btn btn-schedule-transfer btn-lg rounded-pill px-4 action-btn"
+                    data-bs-toggle="modal" data-bs-target="#scheduledTransferModal" disabled>
+                <i class="fas fa-calendar-alt me-2"></i>Schedule Transfer
+            </button>
+
             <a href="@Url.Action("History", new { accountId = ViewBag.SelectedAccountId })"
                class="btn btn-history btn-lg rounded-pill px-4 action-btn"
                id="historyButton">
@@ -186,6 +192,54 @@
             </div>
         </div>
     </div>
+    <!-- Scheduled Transfer Modal -->
+    <div class="modal fade" id="scheduledTransferModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-calendar-alt me-2"></i>Schedule Transfer
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-action="ScheduledTransfer">
+                    <!-- Hidden input for fromAccountId -->
+                    <input type="hidden" name="fromAccountId" id="scheduledTransferFromAccountId" />
+                    <div class="modal-body">
+                        <!-- Destination Account -->
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="toAccountNumber" id="scheduledToAccountNumber" required />
+                            <label for="scheduledToAccountNumber">Destination Account</label>
+                        </div>
+                        <!-- Amount -->
+                        <div class="form-floating mb-4">
+                            <input type="number" class="form-control" name="amount" id="scheduledTransferAmount" step="0.01" required />
+                            <label for="scheduledTransferAmount">Amount</label>
+                        </div>
+                        <!-- Date & Time Picker -->
+                        <div class="form-floating mb-4">
+                            <input type="datetime-local" class="form-control" name="scheduledDate" id="scheduledTransferDate" required />
+                            <label for="scheduledTransferDate">Scheduled Date &amp; Time</label>
+                        </div>
+                        <!-- Description -->
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description" id="scheduledTransferDescription" required />
+                            <label for="scheduledTransferDescription">Description</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-lg btn-schedule-transfer rounded-pill px-4">
+                            Confirm <i class="fas fa-check ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 
 <style>
@@ -215,6 +269,13 @@
     .btn-transfer {
         background: linear-gradient(135deg, #F59E0B, #EF4444);
         color: white !important;
+    }
+
+    .btn-schedule-transfer {
+        background: linear-gradient(135deg, #6C5CE7, #00CEC9);
+        color: white !important;
+        transition: all 0.3s ease;
+        border: none;
     }
 
     .action-btn {
@@ -280,6 +341,40 @@
         .btn-history:hover i {
             transform: rotate(-20deg);
         }
+
+
+
+
+    /* Scheduled Transfer Modal Custom Styles */
+    #scheduledTransferModal .modal-content {
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+   
+
+  
+
+
+    /* Scheduled Transfer Button */
+    .btn-schedule-transfer {
+        background: linear-gradient(135deg, #6C5CE7, #00CEC9);
+        color: white !important;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .btn-schedule-transfer:hover {
+            filter: brightness(1.1);
+        }
+
+    /* Footer button styling */
+    #scheduledTransferModal .modal-footer button.btn-link {
+        font-size: 1rem;
+        text-decoration: underline;
+    }
+
 </style>
 <script>
     //init <script>
@@ -340,7 +435,7 @@
             accountDetails.classList.add('animate__fadeIn');
 
             // Enable buttons with animation
-            const buttons = ['withdrawButton', 'depositButton', 'transferButton'];
+            const buttons = ['withdrawButton', 'depositButton', 'transferButton', 'scheduleTransferButton'];
             buttons.forEach(buttonId => {
                 const btn = document.getElementById(buttonId);
                 btn.disabled = false;

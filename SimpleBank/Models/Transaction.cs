@@ -34,6 +34,17 @@ namespace SimpleBank.Models
         [MaxLength(255, ErrorMessage = "Description cannot exceed 255 characters.")]
         public string Description { get; set; }
 
+
+        // for sechudling
+
+        [Display(Name = "Scheduled Date")]
+        [DataType(DataType.DateTime)]
+        public DateTime? ScheduledDate { get; set; }
+
+        [MaxLength(20)]
+        public string Status { get; set; } = "Pending"; // Pending/Completed/Failed
+
+
         // Foreign key to Account
         [Required(ErrorMessage = "AccountId is required.")]
         public int AccountId { get; set; }

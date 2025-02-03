@@ -15,7 +15,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add Identity services
+
+// Add the background service
+builder.Services.AddHostedService<ScheduledTransactionService>();
 // Add Identity services
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 {
