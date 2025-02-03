@@ -37,9 +37,12 @@
                         </li>
 
                         <li class="nav-item mx-2">
-                            <a class="nav-link hover-underline" href="/Access/Login">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
-                            </a>
+                            <form asp-controller="Access" asp-action="Logout" method="post" id="logoutForm">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="nav-link hover-underline" style="background: none; border: none; cursor: pointer;">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </button>
+                            </form>
                         </li>
                     }
                     else
@@ -76,9 +79,8 @@
                         <span>Simple Bank </span>
                     </h4>
                     <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
-                        <a href="#" class="text-white text-decoration-none hover-underline">About Us</a>
-                        <a href="#" class="text-white text-decoration-none hover-underline">Careers</a>
-                        <a href="#" class="text-white text-decoration-none hover-underline">Privacy Policy</a>
+                        <a href="/Home/About" class="text-white text-decoration-none hover-underline">About Us</a>
+                        <a href="/Home/Privacy" class="text-white text-decoration-none hover-underline">Privacy Policy</a>
                     </div>
                 </div>
                 <div class="col-md-6 text-center text-md-end">

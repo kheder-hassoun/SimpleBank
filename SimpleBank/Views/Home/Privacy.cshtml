@@ -1,6 +1,89 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+﻿@* Views/Home/Privacy.cshtml *@
+@{
+    ViewBag.Title = "Privacy Policy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+
+    <style>
+        .privacy-container {
+            margin: 2rem auto;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .privacy-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .privacy-header h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin: 0;
+        }
+        .privacy-section {
+            margin-bottom: 1.5rem;
+        }
+        .privacy-section h3 {
+            color: #2980b9;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .privacy-section p {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin: 0;
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+
+<div class="privacy-container">
+    <div class="privacy-header">
+        <h2>@ViewBag.Title</h2>
+    </div>
+
+    <div class="privacy-section">
+        <p>
+            Your privacy is important to us. At <strong>kheder Bank </strong>, we are committed to protecting your personal information and your right to privacy. This policy explains how we collect, use, and safeguard your data.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h3>Information We Collect</h3>
+        <p>
+            We may collect personal data such as your name, contact information, and financial details only when necessary and with your consent.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h3>How We Use Your Information</h3>
+        <p>
+            Your information is used to provide you with our services, process transactions, and improve your banking experience. We do not sell your information to third parties.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h3>Security</h3>
+        <p>
+            We implement a variety of security measures to maintain the safety of your personal information. However, no method of transmission over the Internet is 100% secure.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h3>Contact Us</h3>
+        <p>
+            If you have any questions regarding our privacy practices, please contact us at <a href="mailto:privacy@kheder.com">privacy@yourbank.com</a>.
+        </p>
+    </div>
+</div>

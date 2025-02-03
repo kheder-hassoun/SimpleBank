@@ -35,6 +35,11 @@ namespace SimpleBank.Controllers
         {
             return View();
         }
+        // GET: /Home/About
+        public ActionResult About()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

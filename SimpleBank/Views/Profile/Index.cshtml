@@ -8,37 +8,59 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-lg rounded-4 border-0 animate__animated animate__fadeInUp">
-                <!-- Gradient Card Header -->
-                <div class="card-header bg-gradient-primary text-white py-4 rounded-top-4">
-                    <div class="d-flex align-items-center justify-content-center">
-                        <!-- Profile Image -->
-                        <div class="me-3">
-                            <img src="~/imgs/me.png" class="rounded-circle shadow" alt="User Avatar" style="width: 80px; height: 80px;">
+                <!-- Gradient Card Header with QR -->
+                <div class="card-header bg-gradient-primary text-white py-4 rounded-top-4 position-relative">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <!-- Profile Image -->
+                            <div class="me-3">
+                                <img src="~/imgs/me.png" class="rounded-circle shadow" alt="User Avatar" style="width: 80px; height: 80px;">
+                            </div>
+                            <!-- User Info -->
+                            <div>
+                                <h2 class="fw-bold mb-0">Hi @Model.FirstName <span class="text-warning">❤</span></h2>
+                                <p class="mb-0 opacity-75">@Model.Email</p>
+                            </div>
                         </div>
-                        <!-- User Info -->
-                        <div>
-                            <h2 class="fw-bold mb-0">Hi @Model.FirstName ❤</h2>
-                            <p class="mb-0">@Model.Email</p>
-                        </div>
+                        <!-- QR Code Container -->
+                        <div id="qrcode" class="qr-glass shadow-sm"></div>
                     </div>
                 </div>
 
                 <!-- Card Body -->
                 <div class="card-body p-4">
-                    <!-- User Details -->
-                    <div class="mb-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="fas fa-map-marker-alt text-primary me-3 fs-5"></i>
-                            <div>
-                                <p class="mb-0"><strong>City:</strong> @Model.City</p>
+                    <!-- User Details Grid -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center p-3 bg-light rounded-3 h-100">
+                                <i class="fas fa-map-marker-alt text-primary fs-4 me-3"></i>
+                                <div>
+                                    <p class="mb-0 text-muted small">Location</p>
+                                    <p class="mb-0 fw-bold">@Model.City</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-lock text-primary me-3 fs-5"></i>
-                            <div>
-                                <p class="mb-0"><strong>PIN Code:</strong> @Model.PinCode</p>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center p-3 bg-light rounded-3 h-100">
+                                <i class="fas fa-lock text-primary fs-4 me-3"></i>
+                                <div>
+                                    <p class="mb-0 text-muted small">Security Code</p>
+                                    <p class="mb-0 fw-bold">@Model.PinCode</p>
+                                </div>
                             </div>
                         </div>
+                        <!-- Data Responsibility Card -->
+                        <div class="col-12">
+                            <!-- Changed to col-12 to make it full width -->
+                            <div class="d-flex align-items-center p-4 bg-gradient-primary text-white rounded-3 h-100 shadow-sm">
+                                <i class="fas fa-shield-alt fs-2 me-4"></i> 
+                                <div>
+                                    <p class="mb-2 text-white small">Your Data is Our Responsibility, Don't Worry</p>
+                                    <p class="mb-0 fw-bold fs-5">All Love, @Model.FirstName ❤️</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     </div>
 
                     <!-- Action Buttons -->
@@ -46,9 +68,8 @@
                         <a href="@Url.Action("Edit", "Profile")" class="btn btn-primary btn-lg rounded-pill py-2">
                             <i class="fas fa-edit me-2"></i>Edit Profile
                         </a>
-                        <a href="@Url.Action("Logout", "Access")" class="btn btn-outline-danger btn-lg rounded-pill py-2">
-                            <i class="fas fa-sign-out-alt me-2"></i>Logout
-                        </a>
+                    
+                       
                     </div>
                 </div>
             </div>
@@ -56,33 +77,10 @@
     </div>
 </div>
 
-<!-- Custom Styles -->
+<!-- QR Code Generation Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
-    /* Gradient Background */
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #6f42c1, #3498db);
-    }
-
-    /* Card Styling */
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Rounded Corners */
-    .rounded-4 {
-        border-radius: 1rem;
-    }
-
-    .rounded-top-4 {
-        border-top-left-radius: 1rem;
-        border-top-right-radius: 1rem;
-    }
-
     /* Button Styling */
     .btn-primary {
         background-color: #6f42c1;
@@ -90,25 +88,74 @@
         transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
-        background-color: #59359a;
-        transform: translateY(-2px);
+        .btn-primary:hover {
+            background-color: #59359a;
+            transform: translateY(-2px);
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
     }
 
-    .btn-outline-danger {
-        border-color: #dc3545;
-        color: #dc3545;
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: rgba(255, 255, 255, 0.98);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(99, 102, 241, 0.15);
+    }
+
+    .qr-glass {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 8px;
+        transition: all 0.3s ease;
+        width: 80px;
+        height: 80px;
+    }
+
+    .qr-glass:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .hover-transform {
         transition: all 0.3s ease;
     }
 
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: white;
+    .hover-transform:hover {
         transform: translateY(-2px);
     }
 
-    /* Icon Styling */
     .fa-map-marker-alt, .fa-lock {
-        color: #6f42c1;
+        color: #6366f1;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa!important;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Generate QR Code with user data
+        const userData = {
+            name: '@Model.FirstName',
+            email: '@Model.Email',
+            city: '@Model.City',
+            pin: '@Model.PinCode'
+        };
+        
+        new QRCode(document.getElementById('qrcode'), {
+            text: JSON.stringify(userData),
+            width: 64,
+            height: 64,
+            colorDark: '#1f2937',
+            colorLight: 'rgba(255, 255, 255, 0)',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    });
+</script>

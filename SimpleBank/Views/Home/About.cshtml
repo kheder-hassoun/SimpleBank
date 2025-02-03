@@ -1,0 +1,90 @@
+﻿@* Views/Home/About.cshtml *@
+@{
+    ViewBag.Title = "About Us";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+    <style>
+        .about-container {
+            margin: 2rem auto;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+            .about-header h2 {
+                color: #2c3e50;
+                font-size: 2rem;
+                margin: 0;
+            }
+
+        .about-section {
+            margin-bottom: 1.5rem;
+        }
+
+            .about-section h3 {
+                color: #2980b9;
+                border-bottom: 2px solid #ecf0f1;
+                padding-bottom: 0.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .about-section p {
+                color: #7f8c8d;
+                line-height: 1.6;
+                margin: 0;
+            }
+
+        a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
+
+
+<div class="about-container">
+    <div class="about-header">
+        <h2>@ViewBag.Title</h2>
+    </div>
+
+    <div class="about-section">
+        <h3>Our Mission</h3>
+        <p>
+            At <strong>Kheder Bank</strong>, our mission is to empower individuals and businesses through innovative financial solutions. We strive to provide outstanding service, trusted advice, and secure banking experiences to our valued customers.
+        </p>
+    </div>
+
+    <div class="about-section">
+        <h3>Our History</h3>
+        <p>
+            Established in [Year], <strong>Kheder Bank</strong> has grown from a local financial institution into a trusted national brand. Over the years, we have built lasting relationships with our customers and continuously evolved to meet the changing needs of the market.
+        </p>
+    </div>
+
+    <div class="about-section">
+        <h3>Our Team</h3>
+        <p>
+            Our dedicated team of professionals brings together years of experience in banking and finance. We are committed to innovation, transparency, and excellence in everything we do.
+        </p>
+    </div>
+
+    <div class="about-section">
+        <h3>Community Involvement</h3>
+        <p>
+            We believe in giving back to the community. <strong>kheder Bank</strong> supports various local initiatives and charitable organizations to help foster a stronger, more vibrant community.
+        </p>
+    </div>
+</div>
