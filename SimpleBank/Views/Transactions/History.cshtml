@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Transaction History";
 }
-
 <div class="container py-4 animate__animated animate__fadeIn">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="display-5 fw-bold text-primary">
@@ -36,6 +35,7 @@
                 {
                     <div class="list-group-item list-group-item-action hover-highlight">
                         <div class="row align-items-center">
+                            <!-- Transaction Type Column -->
                             <div class="col-md-2">
                                 <div class="d-flex align-items-center">
                                     @switch (transaction.TransactionType.ToLower())
@@ -57,16 +57,25 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <!-- From Account -->
+                            <div class="col-md-2">
                                 <div class="text-secondary">From</div>
                                 <span class="badge bg-light text-dark">@transaction.SourceAccountNumber</span>
                             </div>
 
-                            <div class="col-md-3">
+                            <!-- To Account -->
+                            <div class="col-md-2">
                                 <div class="text-secondary">To</div>
                                 <span class="badge bg-light text-dark">@transaction.DestinationAccountNumber</span>
                             </div>
 
+                            <!-- Status -->
+                            <div class="col-md-2">
+                                <div class="text-secondary">Status</div>
+                                <span class="badge bg-light text-dark">@transaction.Status</span>
+                            </div>
+
+                            <!-- Amount -->
                             <div class="col-md-2">
                                 <div class="d-flex align-items-center justify-content-end">
                                     <span class="@GetAmountClass(transaction.TransactionType) fs-5">
@@ -75,6 +84,7 @@
                                 </div>
                             </div>
 
+                            <!-- Description -->
                             <div class="col-md-2">
                                 <div class="text-truncate" data-bs-toggle="tooltip"
                                      title="@transaction.Description">
@@ -89,7 +99,6 @@
         </div>
     </div>
 </div>
-
 @functions {
     string GetAmountClass(string transactionType)
     {

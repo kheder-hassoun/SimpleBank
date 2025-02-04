@@ -9,26 +9,31 @@
         <h1 class="display-5 fw-bold text-gradient">Account Transactions</h1>
         <p class="lead text-muted">Manage your funds securely</p>
     </header>
-
     <!-- Account Selection -->
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mb-5">
         <div class="col-md-8 col-lg-6">
-            <div class="form-floating mb-4">
-                <select id="accountSelect" class="form-select form-select-lg" required>
-                    <option value="">-- Select Account --</option>
-                    @foreach (var account in Model)
-                    {
-                        <option value="@account.Id"
-                                data-account-type="@account.AccountType"
-                                data-balance="@account.Balance.ToString("F2")"
-                                selected="@(ViewBag.SelectedAccountId != null && ViewBag.SelectedAccountId == account.Id ? "selected" : null)">
-                            @account.AccountNumber - @account.AccountType
-                        </option>
-                    }
-                </select>
-                <label for="accountSelect" class="text-muted">
-                    <i class="fas fa-wallet me-2"></i>Select Account
-                </label>
+            <div class="input-group input-group-lg shadow-lg hover-scale">
+                <span class="input-group-text bg-gradient-primary text-white border-0">
+                    <i class="fas fa-wallet fa-lg"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <select id="accountSelect" class="form-select border-0 bg-light"
+                            style="height: 60px; font-size: 1.1rem;" required>
+                        <option value="">Choose Account...</option>
+                        @foreach (var account in Model)
+                        {
+                            <option value="@account.Id"
+                                    data-account-type="@account.AccountType"
+                                    data-balance="@account.Balance.ToString("F2")"
+                                    selected="@(ViewBag.SelectedAccountId != null && ViewBag.SelectedAccountId == account.Id ? "selected" : null)">
+                                @account.AccountNumber - @account.AccountType
+                            </option>
+                        }
+                    </select>
+                    <label for="accountSelect" class="text-muted ps-4">
+                        Select Funding Account
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -37,20 +42,30 @@
         <div class="col-md-8 col-lg-6 mx-auto">
             <div class="card bg-light shadow-sm mb-4">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
+                    <!-- Use flexbox to keep everything on the same line -->
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <!-- Icon -->
+                        <p class="fas fa-credit-card fa-2x custom-purple me-3"></p>
+
+                        <!-- Account Type -->
+                        <div>
                             <p class="mb-1 text-muted">Account Type:</p>
                             <h5 id="accountType" class="fw-bold text-primary"></h5>
                         </div>
-                        <div class="col-6 text-end">
+
+                        <!-- Current Balance (Aligned to the right) -->
+                        <div class="text-end">
                             <p class="mb-1 text-muted">Current Balance:</p>
                             <h5 id="accountBalance" class="fw-bold text-success"></h5>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Action Buttons -->
     <div class="text-center mt-4 animate__animated animate__fadeInUp">
@@ -107,6 +122,14 @@
                                    id="Description" step="0.01" required />
                             <label for="Description">Description</label>
                         </div>
+                        <!-- PIN Field with Gradient -->
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
+                        </div>
                        
                     </div>
                     <div class="modal-footer border-0">
@@ -141,6 +164,14 @@
                             <input type="text" class="form-control" name="description"
                                    id="Description" step="0.01" required />
                             <label for="Description">Description</label>
+                        </div>
+                        <!-- PIN Field with Gradient -->
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="modal-footer border-0">
@@ -180,6 +211,14 @@
                             <input type="text" class="form-control" name="description"
                                    id="Description" step="0.01" required />
                             <label for="Description">Description</label>
+                        </div>
+                        <!-- PIN Field with Gradient -->
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="modal-footer border-0">
@@ -226,6 +265,13 @@
                             <input type="text" class="form-control" name="description" id="scheduledTransferDescription" required />
                             <label for="scheduledTransferDescription">Description</label>
                         </div>
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
+                        </div>
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
@@ -242,8 +288,48 @@
 
 </div>
 
+
 <style>
     /* Custom Styles */
+    .custom-purple {
+        color: #6a0dad !important; 
+    }
+    .hover-scale {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-scale:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #6f42c1, #3498db);
+    }
+
+    .bg-gradient-dark {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+    }
+
+    .shadow-5 {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .hover-3d {
+        transition: transform 0.3s ease;
+    }
+
+        .hover-3d:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(2deg);
+        }
+
+    .icon-blur {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+    }
+
+  
+
 
     .form-select {
         border-radius: 0.75rem;
@@ -375,7 +461,29 @@
         text-decoration: underline;
     }
 
+    .pin-input {
+        color: blueviolet;
+    }
 </style>
+
+<script>
+    document.getElementById('accountSelect').addEventListener('change', function () {
+        const detailsCard = document.getElementById('accountDetails');
+        const typeElement = document.getElementById('accountType');
+        const balanceElement = document.getElementById('accountBalance');
+
+        if (this.value) {
+            const selectedOption = this.options[this.selectedIndex];
+            typeElement.textContent = selectedOption.dataset.accountType;
+            balanceElement.textContent = `${selectedOption.dataset.currency} ${selectedOption.dataset.balance}`;
+
+            detailsCard.style.display = 'block';
+            detailsCard.classList.add('animate__animated', 'animate__fadeInUp');
+        } else {
+            detailsCard.style.display = 'none';
+        }
+    });
+</script>
 <script>
     //init <script>
     document.addEventListener('DOMContentLoaded', function () {
