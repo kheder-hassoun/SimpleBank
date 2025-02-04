@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SimpleBank.Models;
 using System.Linq;
@@ -22,7 +23,9 @@ namespace SimpleBank.Controllers
         {
             var userId = User.Identity.Name; // Gets the current logged-in user's username or email
             var accounts = await _context.Accounts
+                .Include(a => a.AccountType)
                 .Where(a => a.ApplicationUser.UserName == userId)
+
                 .ToListAsync();
 
             return View(accounts);
@@ -34,6 +37,11 @@ namespace SimpleBank.Controllers
             var userId = User.Identity.Name;
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId);
             ViewData["ApplicationUserId"] = user.Id;
+            // Fetch the list of account types from the database
+            var accountTypes = _context.AccountTypes.ToList();
+
+            // Pass the list to the view using ViewData
+            ViewData["AccountTypes"] = new SelectList(accountTypes, "Id", "TypeName");
 
             return View(new Account());
         }
@@ -41,7 +49,7 @@ namespace SimpleBank.Controllers
         // POST: Account/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountType,Balance,AccountNumber,ApplicationUserId")] Account account)
+        public async Task<IActionResult> Create([Bind("AccountTypeId,Balance,AccountNumber,ApplicationUserId")] Account account)
         {
             if (ModelState.IsValid)
             {
@@ -56,6 +64,9 @@ namespace SimpleBank.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
+            // If the model state is invalid, repopulate the account types dropdown
+            var accountTypes = _context.AccountTypes.ToList();
+            ViewData["AccountTypes"] = new SelectList(accountTypes, "Id", "TypeName");
             return View(account);
         }
 
@@ -78,6 +89,11 @@ namespace SimpleBank.Controllers
 
             // Pass the ApplicationUserId to the view
             ViewData["ApplicationUserId"] = account.ApplicationUser.Id;
+            // Fetch the list of account types from the database
+            var accountTypes = _context.AccountTypes.ToList();
+
+            // Pass the list to the view using ViewData
+            ViewData["AccountTypes"] = new SelectList(accountTypes, "Id", "TypeName", account.AccountTypeId);
 
             return View(account);
         }
@@ -86,7 +102,7 @@ namespace SimpleBank.Controllers
         // POST: Account/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AccountType,AccountNumber,ApplicationUserId,Balance")] Account account)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,AccountTypeId,AccountNumber,ApplicationUserId,Balance")] Account account)
         {
             if (id != account.Id)
             {
@@ -110,7 +126,9 @@ namespace SimpleBank.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
+            // If the model state is invalid, repopulate the account types dropdown
+            var accountTypes = _context.AccountTypes.ToList();
+            ViewData["AccountTypes"] = new SelectList(accountTypes, "Id", "TypeName", account.AccountTypeId);
             return View(account);
         }
 

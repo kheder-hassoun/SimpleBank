@@ -14,9 +14,13 @@ namespace SimpleBank.Models
         [MaxLength(20, ErrorMessage = "Account number cannot exceed 20 characters.")]
         public string AccountNumber { get; set; } // Unique account number
 
-        [Required]
-        [StringLength(100)]
-        public string AccountType { get; set; }
+        [Required(ErrorMessage = "Account type is required.")]
+        public int AccountTypeId { get; set; }
+
+        [ForeignKey("AccountTypeId")]
+        [ValidateNever]
+        public AccountType AccountType { get; set; }
+
         [Required(ErrorMessage = "Balance is required.")]
         [Column(TypeName = "decimal(18,2)")]
         [Range(0, double.MaxValue, ErrorMessage = "Balance must be non-negative.")]

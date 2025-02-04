@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using SimpleBank.Models;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
 namespace SimpleBank.Controllers
@@ -22,6 +24,7 @@ namespace SimpleBank.Controllers
         {
             var userId = User.Identity.Name;
             var accounts = await _context.Accounts
+                  .Include(a => a.AccountType)
                 .Where(a => a.ApplicationUser.UserName == userId)
                 .ToListAsync();
 
@@ -44,7 +47,7 @@ namespace SimpleBank.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Withdraw(int accountId, decimal amount, string description)
+        public async Task<IActionResult> Withdraw(int accountId, decimal amount, string description,string pin)
         {
             if (amount <= 0)
             {
@@ -58,7 +61,18 @@ namespace SimpleBank.Controllers
                 return RedirectToAction("Create", new { accountId });
             }
 
-            var account = await _context.Accounts.FindAsync(accountId);
+            var account = await _context.Accounts
+     .Include(a => a.ApplicationUser)
+     .FirstOrDefaultAsync(a => a.Id == accountId);
+
+            var applicationUser = account?.ApplicationUser;
+
+            if (pin != applicationUser.PinCode )
+            {
+                TempData["Error"] = "PIN Code is not currect .";
+                return RedirectToAction("Create");
+
+            }
 
             if (account == null)
             {
@@ -97,7 +111,7 @@ namespace SimpleBank.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Deposit(int accountId, decimal amount, string description)
+        public async Task<IActionResult> Deposit(int accountId, decimal amount, string description,string pin)
         {
             if (amount <= 0)
             {
@@ -111,7 +125,18 @@ namespace SimpleBank.Controllers
                 return RedirectToAction("Create", new { accountId });
             }
 
-            var account = await _context.Accounts.FindAsync(accountId);
+            var account = await _context.Accounts
+    .Include(a => a.ApplicationUser)
+    .FirstOrDefaultAsync(a => a.Id == accountId);
+
+            var applicationUser = account?.ApplicationUser;
+
+            if (pin != applicationUser.PinCode)
+            {
+                TempData["Error"] = "PIN Code is not currect .";
+                return RedirectToAction("Create");
+
+            }
 
             if (account == null)
             {
@@ -144,7 +169,7 @@ namespace SimpleBank.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Transfer(int fromAccountId, string toAccountNumber, decimal amount, string description)
+        public async Task<IActionResult> Transfer(int fromAccountId, string toAccountNumber, decimal amount, string description,string pin)
         {
             if (amount <= 0)
             {
@@ -157,8 +182,19 @@ namespace SimpleBank.Controllers
                 TempData["Error"] = "Description is required.";
                 return RedirectToAction("Create", new { accountId = fromAccountId });
             }
+            var fromAccount = await _context.Accounts
+.Include(a => a.ApplicationUser)
+.FirstOrDefaultAsync(a => a.Id == fromAccountId);
 
-            var fromAccount = await _context.Accounts.FindAsync(fromAccountId);
+            var applicationUser = fromAccount?.ApplicationUser;
+
+            if (pin != applicationUser.PinCode)
+            {
+                TempData["Error"] = "PIN Code is not currect .";
+                return RedirectToAction("Create");
+
+            }
+         
             var toAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == toAccountNumber);
 
             if (fromAccount == null || toAccount == null)
@@ -224,7 +260,7 @@ namespace SimpleBank.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ScheduledTransfer(int fromAccountId, string toAccountNumber, decimal amount, string description, DateTime scheduledDate)
+        public async Task<IActionResult> ScheduledTransfer(int fromAccountId, string toAccountNumber, decimal amount, string description, DateTime scheduledDate,string pin)
         {
             // Validate amount
             if (amount <= 0)
@@ -248,7 +284,18 @@ namespace SimpleBank.Controllers
             }
 
             // Fetch accounts
-            var fromAccount = await _context.Accounts.FindAsync(fromAccountId);
+            var fromAccount = await _context.Accounts
+.Include(a => a.ApplicationUser)
+.FirstOrDefaultAsync(a => a.Id == fromAccountId);
+
+            var applicationUser = fromAccount?.ApplicationUser;
+
+            if (pin != applicationUser.PinCode)
+            {
+                TempData["Error"] = "PIN Code is not currect .";
+                return RedirectToAction("Create");
+
+            }
             var toAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == toAccountNumber);
 
             // Validate accounts
@@ -268,7 +315,7 @@ namespace SimpleBank.Controllers
             // Create the scheduled transaction
             var transaction = new Transaction
             {
-                TransactionType = "Transfer",
+                TransactionType = "scheduled Transfer",
                 Amount = amount,
                 Date = DateTime.Now, // Current date (when the transaction is created)
                 ScheduledDate = scheduledDate, // Future date (when the transaction should be executed)

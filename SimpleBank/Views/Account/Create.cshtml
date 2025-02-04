@@ -36,23 +36,25 @@
                             }
                         </div>
 
-                 
+
                         <!-- Account Type -->
                         <div class="form-floating mb-4">
-                            <select class="form-select" id="AccountType" name="AccountType" required>
+                            <select class="form-select" id="AccountTypeId" name="AccountTypeId" required>
                                 <option value="">-- Select Account Type --</option>
-                                <option value="Savings" selected="@(Model?.AccountType == "Savings" ? "selected" : null)">Savings</option>
-                                <option value="Checking" selected="@(Model?.AccountType == "Checking" ? "selected" : null)">Checking</option>
-                                <option value="Business" selected="@(Model?.AccountType == "Business" ? "selected" : null)">Business</option>
-                                <option value="Investment" selected="@(Model?.AccountType == "Investment" ? "selected" : null)">Investment</option>
+                                @foreach (var accountType in (SelectList)ViewData["AccountTypes"])
+                                {
+                                    <option value="@accountType.Value" selected="@(Model?.AccountTypeId.ToString() == accountType.Value ? "selected" : null)">
+                                        @accountType.Text
+                                    </option>
+                                }
                             </select>
-                            <label for="AccountType" class="text-muted">
+                            <label for="AccountTypeId" class="text-muted">
                                 <i class="fas fa-credit-card me-2"></i>Account Type
                             </label>
-                            @if (ViewData.ModelState["AccountType"]?.Errors.Count > 0)
+                            @if (ViewData.ModelState["AccountTypeId"]?.Errors.Count > 0)
                             {
                                 <div class="invalid-feedback d-block">
-                                    @foreach (var error in ViewData.ModelState["AccountType"].Errors)
+                                    @foreach (var error in ViewData.ModelState["AccountTypeId"].Errors)
                                     {
                                         <span>@error.ErrorMessage</span>
                                     }

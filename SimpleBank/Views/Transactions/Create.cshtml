@@ -23,10 +23,10 @@
                         @foreach (var account in Model)
                         {
                             <option value="@account.Id"
-                                    data-account-type="@account.AccountType"
+                                    data-account-type="@account.AccountType.TypeName"
                                     data-balance="@account.Balance.ToString("F2")"
                                     selected="@(ViewBag.SelectedAccountId != null && ViewBag.SelectedAccountId == account.Id ? "selected" : null)">
-                                @account.AccountNumber - @account.AccountType
+                                @account.AccountNumber - @account.AccountType.TypeName
                             </option>
                         }
                     </select>
@@ -125,7 +125,7 @@
                         <!-- PIN Field with Gradient -->
                         <div class="form-floating mb-4 ">
                             <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
-                            <label for="pinInput">Enter PIN</label>
+                            <label for="pinInput">Enter PIN 🔑</label>
                             <span class="position-absolute end-0 top-50 translate-middle-y me-3">
                                 <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
                             </span>
@@ -168,7 +168,7 @@
                         <!-- PIN Field with Gradient -->
                         <div class="form-floating mb-4 ">
                             <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
-                            <label for="pinInput">Enter PIN</label>
+                            <label for="pinInput">Enter PIN 🔑</label>
                             <span class="position-absolute end-0 top-50 translate-middle-y me-3">
                                 <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
                             </span>
@@ -215,7 +215,7 @@
                         <!-- PIN Field with Gradient -->
                         <div class="form-floating mb-4 ">
                             <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
-                            <label for="pinInput">Enter PIN</label>
+                            <label for="pinInput">Enter PIN 🔑</label>
                             <span class="position-absolute end-0 top-50 translate-middle-y me-3">
                                 <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
                             </span>
@@ -267,7 +267,7 @@
                         </div>
                         <div class="form-floating mb-4 ">
                             <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
-                            <label for="pinInput">Enter PIN</label>
+                            <label for="pinInput">Enter PIN 🔑</label>
                             <span class="position-absolute end-0 top-50 translate-middle-y me-3">
                                 <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
                             </span>
