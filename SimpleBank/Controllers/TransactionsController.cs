@@ -315,7 +315,7 @@ namespace SimpleBank.Controllers
             // Create the scheduled transaction
             var transaction = new Transaction
             {
-                TransactionType = "scheduled Transfer",
+                TransactionType = "Transfer",
                 Amount = amount,
                 Date = DateTime.Now, // Current date (when the transaction is created)
                 ScheduledDate = scheduledDate, // Future date (when the transaction should be executed)
