@@ -1,0 +1,567 @@
+﻿@model List<Account>
+@{
+    ViewData["Title"] = "Transaction";
+}
+
+<div class="container-fluid px-4 py-5">
+    <!-- Header -->
+    <header class="text-center mb-5 animate__animated animate__fadeIn">
+        <h1 class="display-5 fw-bold text-gradient">Account Transactions</h1>
+        <p class="lead text-muted">Manage your funds securely</p>
+    </header>
+    <!-- Account Selection -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8 col-lg-6">
+            <div class="input-group input-group-lg shadow-lg hover-scale">
+                <span class="input-group-text bg-gradient-primary text-white border-0">
+                    <i class="fas fa-wallet fa-lg"></i>
+                </span>
+                <div class="form-floating flex-grow-1">
+                    <select id="accountSelect" class="form-select border-0 bg-light"
+                            style="height: 60px; font-size: 1.1rem;" required>
+                        <option value="">Choose Account...</option>
+                        @foreach (var account in Model)
+                        {
+                            <option value="@account.Id"
+                                    data-account-type="@account.AccountType.TypeName"
+                                    data-balance="@account.Balance.ToString("F2")"
+                                    selected="@(ViewBag.SelectedAccountId != null && ViewBag.SelectedAccountId == account.Id ? "selected" : null)">
+                                @account.AccountNumber - @account.AccountType.TypeName
+                            </option>
+                        }
+                    </select>
+                    <label for="accountSelect" class="text-muted ps-4">
+                        Select Funding Account
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Account Details -->
+    <div id="accountDetails" class="row justify-content-center animate__animated animate__fadeIn" style="display: none;">
+        <div class="col-md-8 col-lg-6 mx-auto">
+            <div class="card bg-light shadow-sm mb-4">
+                <div class="card-body">
+                    <!-- Use flexbox to keep everything on the same line -->
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <!-- Icon -->
+                        <p class="fas fa-credit-card fa-2x custom-purple me-3"></p>
+
+                        <!-- Account Type -->
+                        <div>
+                            <p class="mb-1 text-muted">Account Type:</p>
+                            <h5 id="accountType" class="fw-bold text-primary"></h5>
+                        </div>
+
+                        <!-- Current Balance (Aligned to the right) -->
+                        <div class="text-end">
+                            <p class="mb-1 text-muted">Current Balance:</p>
+                            <h5 id="accountBalance" class="fw-bold text-success"></h5>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Action Buttons -->
+    <div class="text-center mt-4 animate__animated animate__fadeInUp">
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <button id="withdrawButton" type="button"
+                    class="btn btn-withdraw btn-lg rounded-pill px-4 action-btn"
+                    data-bs-toggle="modal" data-bs-target="#withdrawModal" disabled>
+                <i class="fas fa-arrow-down me-2"></i>Withdraw
+            </button>
+            <button id="depositButton" type="button"
+                    class="btn btn-deposit btn-lg rounded-pill px-4 action-btn"
+                    data-bs-toggle="modal" data-bs-target="#depositModal" disabled>
+                <i class="fas fa-arrow-up me-2"></i>Deposit
+            </button>
+            <button id="transferButton" type="button"
+                    class="btn btn-transfer btn-lg rounded-pill px-4 action-btn"
+                    data-bs-toggle="modal" data-bs-target="#transferModal" disabled>
+                <i class="fas fa-random me-2"></i>Transfer
+            </button>
+            <button id="scheduleTransferButton" type="button"
+                    class="btn btn-schedule-transfer btn-lg rounded-pill px-4 action-btn"
+                    data-bs-toggle="modal" data-bs-target="#scheduledTransferModal" disabled>
+                <i class="fas fa-calendar-alt me-2"></i>Schedule Transfer
+            </button>
+
+            <a href="@Url.Action("History", new { accountId = ViewBag.SelectedAccountId })"
+               class="btn btn-history btn-lg rounded-pill px-4 action-btn"
+               id="historyButton">
+                <i class="fas fa-history me-2"></i>Transaction History
+            </a>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Withdraw Modal -->
+    <div class="modal fade" id="withdrawModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-gradient-primary text-white rounded-top-4">
+                    <h5 class="modal-title"><i class="fas fa-arrow-down me-2"></i>Withdraw Funds</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-action="Withdraw">
+                    <input type="hidden" name="returnAccountId" value="@ViewBag.SelectedAccountId" />
+                    <div class="modal-body">
+                        <input type="hidden" name="accountId" id="withdrawAccountId" />
+                        <div class="form-floating mb-4">
+                            <input type="number" class="form-control" name="amount"
+                                   id="withdrawAmount" step="0.01" required />
+                            <label for="withdrawAmount">Amount</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description"
+                                   id="Description" step="0.01" required />
+                            <label for="Description">Description</label>
+                        </div>
+                        <!-- PIN Field with Gradient -->
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN 🔑</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
+                        </div>
+                       
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-lg btn-withdraw rounded-pill px-4">
+                            Confirm <i class="fas fa-check ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div class="modal fade" id="depositModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-gradient-success text-white rounded-top-4">
+                    <h5 class="modal-title"><i class="fas fa-arrow-up me-2"></i>Deposit Funds</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-action="Deposit">
+                    <input type="hidden" name="returnAccountId" value="@ViewBag.SelectedAccountId" />
+                    <div class="modal-body">
+                        <input type="hidden" name="accountId" id="depositAccountId" />
+                        <div class="form-floating mb-4">
+                            <input type="number" class="form-control" name="amount"
+                                   id="depositAmount" step="0.01" required />
+                            <label for="depositAmount">Amount</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description"
+                                   id="Description" step="0.01" required />
+                            <label for="Description">Description</label>
+                        </div>
+                        <!-- PIN Field with Gradient -->
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN 🔑</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-lg btn-deposit rounded-pill px-4">
+                            Confirm <i class="fas fa-check ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div class="modal fade" id="transferModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-gradient-warning text-white rounded-top-4">
+                    <h5 class="modal-title"><i class="fas fa-random me-2"></i>Transfer Funds</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-action="Transfer">
+                    <input type="hidden" name="returnAccountId" value="@ViewBag.SelectedAccountId" />
+                    <div class="modal-body">
+                        <input type="hidden" name="fromAccountId" id="transferFromAccountId" />
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="toAccountNumber"
+                                   id="toAccountNumber" required />
+                            <label for="toAccountNumber">Recipient Account</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="number" class="form-control" name="amount"
+                                   id="transferAmount" step="0.01" required />
+                            <label for="transferAmount">Amount</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description"
+                                   id="Description" step="0.01" required />
+                            <label for="Description">Description</label>
+                        </div>
+                        <!-- PIN Field with Gradient -->
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN 🔑</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-lg btn-transfer rounded-pill px-4">
+                            Confirm <i class="fas fa-check ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Scheduled Transfer Modal -->
+    <div class="modal fade" id="scheduledTransferModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-calendar-alt me-2"></i>Schedule Transfer
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" asp-action="ScheduledTransfer">
+                    <!-- Hidden input for fromAccountId -->
+                    <input type="hidden" name="fromAccountId" id="scheduledTransferFromAccountId" />
+                    <div class="modal-body">
+                        <!-- Destination Account -->
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="toAccountNumber" id="scheduledToAccountNumber" required />
+                            <label for="scheduledToAccountNumber">Destination Account</label>
+                        </div>
+                        <!-- Amount -->
+                        <div class="form-floating mb-4">
+                            <input type="number" class="form-control" name="amount" id="scheduledTransferAmount" step="0.01" required />
+                            <label for="scheduledTransferAmount">Amount</label>
+                        </div>
+                        <!-- Date & Time Picker -->
+                        <div class="form-floating mb-4">
+                            <input type="datetime-local" class="form-control" name="scheduledDate" id="scheduledTransferDate" required />
+                            <label for="scheduledTransferDate">Scheduled Date &amp; Time</label>
+                        </div>
+                        <!-- Description -->
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" name="description" id="scheduledTransferDescription" required />
+                            <label for="scheduledTransferDescription">Description</label>
+                        </div>
+                        <div class="form-floating mb-4 ">
+                            <input type="number" class="form-control pe-5 pin-input" name="pin" id="pinInput" required />
+                            <label for="pinInput">Enter PIN 🔑</label>
+                            <span class="position-absolute end-0 top-50 translate-middle-y me-3">
+                                <i class="fas fa-exclamation-triangle text-danger" id="pinWarningIcon"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-lg btn-link text-muted" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-lg btn-schedule-transfer rounded-pill px-4">
+                            Confirm <i class="fas fa-check ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+<style>
+    /* Custom Styles */
+    .custom-purple {
+        color: #6a0dad !important; 
+    }
+    .hover-scale {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-scale:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #6f42c1, #3498db);
+    }
+
+    .bg-gradient-dark {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+    }
+
+    .shadow-5 {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .hover-3d {
+        transition: transform 0.3s ease;
+    }
+
+        .hover-3d:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(2deg);
+        }
+
+    .icon-blur {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+    }
+
+  
+
+
+    .form-select {
+        border-radius: 0.75rem;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+        .form-select:focus {
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+    .btn-withdraw {
+        background: linear-gradient(135deg, #EF4444, #F59E0B);
+        color: white !important;
+    }
+
+    .btn-deposit {
+        background: linear-gradient(135deg, #10B981, #3B82F6);
+        color: white !important;
+    }
+
+    .btn-transfer {
+        background: linear-gradient(135deg, #F59E0B, #EF4444);
+        color: white !important;
+    }
+
+    .btn-schedule-transfer {
+        background: linear-gradient(135deg, #6C5CE7, #00CEC9);
+        color: white !important;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .action-btn {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+    .modal-content {
+        border-radius: 1rem !important;
+    }
+
+    .modal-header {
+        border: none;
+    }
+
+    #accountDetails .card {
+        border: none;
+        border-radius: 1rem;
+        background: rgba(255,255,255,0.95);
+    }
+
+    #accountType {
+        color: #6366F1 !important;
+    }
+
+    #accountBalance {
+        color: #10B981 !important;
+    }
+
+    .text-muted {
+        font-size: 0.9rem;
+    }
+
+    .btn-history {
+        background-color: #6f42c1;
+        border-color: #6f42c1;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+        .btn-history:hover {
+            background-color: #59359a;
+            border-color: #59359a;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-history i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-history:hover i {
+            transform: rotate(-20deg);
+        }
+
+
+
+
+    /* Scheduled Transfer Modal Custom Styles */
+    #scheduledTransferModal .modal-content {
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+   
+
+  
+
+
+    /* Scheduled Transfer Button */
+    .btn-schedule-transfer {
+        background: linear-gradient(135deg, #6C5CE7, #00CEC9);
+        color: white !important;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .btn-schedule-transfer:hover {
+            filter: brightness(1.1);
+        }
+
+    /* Footer button styling */
+    #scheduledTransferModal .modal-footer button.btn-link {
+        font-size: 1rem;
+        text-decoration: underline;
+    }
+
+    .pin-input {
+        color: blueviolet;
+    }
+</style>
+
+<script>
+    document.getElementById('accountSelect').addEventListener('change', function () {
+        const detailsCard = document.getElementById('accountDetails');
+        const typeElement = document.getElementById('accountType');
+        const balanceElement = document.getElementById('accountBalance');
+
+        if (this.value) {
+            const selectedOption = this.options[this.selectedIndex];
+            typeElement.textContent = selectedOption.dataset.accountType;
+            balanceElement.textContent = `${selectedOption.dataset.currency} ${selectedOption.dataset.balance}`;
+
+            detailsCard.style.display = 'block';
+            detailsCard.classList.add('animate__animated', 'animate__fadeInUp');
+        } else {
+            detailsCard.style.display = 'none';
+        }
+    });
+</script>
+<script>
+    //init <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto-select account if specified
+        const selectedAccountId = @(ViewBag.SelectedAccountId != null ? ViewBag.SelectedAccountId : 0);
+        if (selectedAccountId) {
+            const select = document.getElementById('accountSelect');
+            select.value = selectedAccountId;
+            select.dispatchEvent(new Event('change'));
+        }
+
+        // Show messages from TempData
+    @if (ViewBag.Message != null)
+    {
+        <text>
+                    Toastify({
+                        text: "@ViewBag.Message",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#10B981",
+                }).showToast();
+        </text>
+    }
+
+    @if (ViewData.ModelState.ErrorCount > 0)
+    {
+        <text>
+                    Toastify({
+                        text: "@Html.Raw(ViewData.ModelState.First().Value.Errors.First().ErrorMessage)",
+                    duration: 5000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#EF4444",
+                }).showToast();
+        </text>
+    }
+    });
+</script>
+<script>
+    document.getElementById('accountSelect').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const accountDetails = document.getElementById('accountDetails');
+        const selectedAccountId = this.value;
+
+        // Reset error messages
+        document.querySelectorAll('.text-danger').forEach(e => e.remove());
+
+        if (selectedAccountId) {
+            // Show account details
+            document.getElementById('accountType').textContent = selectedOption.dataset.accountType;
+            document.getElementById('accountBalance').textContent =
+                `$${parseFloat(selectedOption.dataset.balance).toFixed(2)}`;
+            accountDetails.style.display = 'block';
+            accountDetails.classList.add('animate__fadeIn');
+
+            // Enable buttons with animation
+            const buttons = ['withdrawButton', 'depositButton', 'transferButton', 'scheduleTransferButton'];
+            buttons.forEach(buttonId => {
+                const btn = document.getElementById(buttonId);
+                btn.disabled = false;
+                btn.classList.add('animate__pulse');
+                setTimeout(() => btn.classList.remove('animate__pulse'), 1000);
+            });
+
+            // Update hidden fields
+            document.querySelectorAll('[id$="AccountId"]').forEach(field => {
+                field.value = selectedAccountId;
+            });
+        } else {
+            // Hide account details
+            accountDetails.style.display = 'none';
+            // Disable buttons
+            buttons.forEach(buttonId => {
+                document.getElementById(buttonId).disabled = true;
+            });
+        }
+    });
+</script>

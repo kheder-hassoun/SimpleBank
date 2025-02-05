@@ -1,0 +1,43 @@
+﻿@model             Account
+
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<div class="container-fluid px-4 py-5">
+    <header class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-danger">Delete Account</h1>
+        <p class="lead text-muted">Are you sure you want to permanently delete this account?</p>
+    </header>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <h4 class="mb-4"> Account</h4>
+                    <dl class="row">
+                        <dt class="col-sm-4">Account Number</dt>
+                        <dd class="col-sm-8">@Model.AccountNumber</dd>
+
+                        <dt class="col-sm-4">Balance</dt>
+                        <dd class="col-sm-8">@Model.Balance.ToString("C")</dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="@Url.Action("Index", "Account")" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-2"></i>Confirm Delete
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
