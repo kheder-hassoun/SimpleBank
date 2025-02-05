@@ -24,16 +24,24 @@ builder.Services.AddHostedService<ScheduledTransactionService>();
 // Add Identity services
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 {
-    options.Password.RequireDigit = false; // Disable requirement for digits
-    options.Password.RequiredLength = 4;   // Set minimum length
-    options.Password.RequireNonAlphanumeric = false; // Disable requirement for special characters
-    options.Password.RequireUppercase = false; // Disable requirement for uppercase letters
-    options.Password.RequireLowercase = false; // Disable requirement for lowercase letters
+    options.Password.RequireDigit = false; 
+    options.Password.RequiredLength = 4;   
+    options.Password.RequireNonAlphanumeric = false; 
+    options.Password.RequireLowercase = false; 
     options.Password.RequiredUniqueChars = 0;
     // Update to match new controller
 })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Access/AccessDenied";
+    options.LoginPath = "/Access/Login";
+    options.LogoutPath = "/Access/Register";
+
+});
+
 builder.Services.AddScoped<IAccountService, AccountService>();
 
 
@@ -46,7 +54,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -63,4 +70,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Access}/{action=Login}/{id?}");
 
+// Catch-all route for 404 Not Found
+app.MapControllerRoute(
+    name: "notfound",
+    pattern: "{*url}",
+    defaults: new { controller = "Home", action = "NotFound" });
 app.Run();

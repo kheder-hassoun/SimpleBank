@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SimpleBank.Controllers
 {
-    [Authorize]
+    [Authorize()]
     public class TransactionsController : Controller
     {
         private readonly ApplicationDbContext _context;

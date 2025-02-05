@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "Welcome to SimpleBank";
+}
+
+<!-- Main Content -->
+<div class="landing-container bg-white">
+
+    <!-- Hero Section -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+
+                <!-- Logo and Title -->
+                <div class="logo-container mb-5 animate__animated animate__fadeInDown">
+                    <i class="fas fa-university fa-4x text-gradient mb-3"></i>
+                    <h1 class="display-3 fw-bold text-gradient mb-0">SimpleBank</h1>
+                    <div class="gradient-bar mx-auto"></div>
+                </div>
+
+                <!-- Tagline -->
+                <p class="lead text-highlight animate__animated animate__fadeIn animate__delay-1s">
+                    Your trusted partner in
+                    <span class="gradient-text">modern banking.</span>
+                    <span class="glow-text">Simple, secure,</span>
+                    and <span class="glow-text2">always there for you.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+        <!-- Action Cards -->
+        <div class="row g-4 justify-content-center animate__animated animate__fadeInUp animate__delay-1s">
+            <!-- Login Card -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-lg h-100 hover-scale">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-sign-in-alt fa-3x text-purple mb-4"></i>
+                        <h3 class="h4 fw-bold text-purple mb-3">Secure Login</h3>
+                        <p class="text-muted mb-4">
+                            Access your account securely and manage your finances with ease.
+                        </p>
+                        <a href="/Access/Login" class="btn btn-purple btn-lg w-100">
+                            Login Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Card -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-lg h-100 hover-scale">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-user-plus fa-3x text-purple mb-4"></i>
+                        <h3 class="h4 fw-bold text-purple mb-3">Instant Register</h3>
+                        <p class="text-muted mb-4">
+                            Create your account in minutes and start your financial journey.
+                        </p>
+                        <a href="/Access/Register" class="btn btn-purple btn-lg w-100">
+                            Register Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Agreement -->
+        <div class="row justify-content-center mt-5 animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="col-12 col-md-8 text-center">
+                <div class="p-4 bg-light rounded-2xl shadow-lg">
+                    <p class="text-dark fw-bold mb-2">
+                        Your privacy matters to us!
+                    </p>
+                    <p class="text-muted small mb-0">
+                        By continuing to browse, you agree to our
+                        <a href="/Privacy" class="text-primary text-decoration-none fw-bold">Privacy Policy</a>.
+                        We’re dedicated to safeguarding your personal information.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+
+    /* Gradient for text */
+    .text-gradient {
+        background: linear-gradient(90deg, #6a0dad, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Cool underline effect */
+    .gradient-bar {
+        width: 50px;
+        height: 4px;
+        background: linear-gradient(to right, #6a0dad, #ff6b6b);
+        border-radius: 2px;
+    }
+
+    /* Highlighted text effects */
+    .gradient-text {
+        background: linear-gradient(90deg, #ff6b6b, #feca57);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: bold;
+    }
+
+    .glow-text {
+        color: #6a0dad;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(106, 13, 173, 0.6);
+    }
+
+    .glow-text2 {
+        color: #6a0dad;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(106, 13, 100, 0.9);
+    }
+
+
+
+ 
+    .text-purple {
+        color: #6f42c1;
+    }
+
+    .btn-purple {
+        background-color: #6f42c1;
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+        .btn-purple:hover {
+            background-color: #59359a;
+            transform: translateY(-2px);
+        }
+
+    .gradient-bar {
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, #9c27b0, #673ab7);
+        margin-top: 1rem;
+    }
+
+    .hover-scale {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-scale:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1) !important;
+        }
+
+    .card {
+        border-radius: 1rem;
+    }
+</style>

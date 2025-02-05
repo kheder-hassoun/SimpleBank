@@ -17,6 +17,11 @@ namespace SimpleBank.Controllers
             _signInManager = signInManager;
         }
 
+        //start up page
+        public IActionResult Index()
+        {
+            return View();
+        }
         // GET: /Access/Login
         [HttpGet]
         public IActionResult Login()
@@ -82,6 +87,11 @@ namespace SimpleBank.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Access");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

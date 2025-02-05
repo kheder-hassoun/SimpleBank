@@ -6,7 +6,13 @@
     <!-- Animated Header -->
     <header class="text-center mb-5 animate__animated animate__slideInDown animate__faster">
         <h1 class="display-4 fw-bold text-gradient">Welcome @ViewData["FirstName"]! to our Bank System</h1>
-        <p class="lead text-muted mt-3 animate__animated animate__fadeIn animate__delay-1s">Your trusted partner in financial excellence</p>
+        <!-- Tagline -->
+        <p class="lead text-highlight animate__animated animate__fadeIn animate__delay-1s">
+            Your trusted partner in
+            <span >modern banking.</span>
+            <span class="glow-text">Simple, secure,</span>
+            and <span >always there for you.</span>
+        </p>
     </header>
 
     <!-- Cards Section -->
@@ -77,6 +83,22 @@
 </div>
 
 <style>
+
+    /* Highlighted text effects */
+    .gradient-text {
+        background: linear-gradient(90deg,#6a0dad,#ff6b6b );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: bold;
+    }
+
+    .glow-text {
+        color: #6a0dad;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(106, 13, 173, 0.6);
+    }
+
+  
     /* Custom Styles */
     .text-gradient {
         background: linear-gradient(45deg, #6366F1, #8B5CF6);

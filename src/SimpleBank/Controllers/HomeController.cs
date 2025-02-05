@@ -20,10 +20,7 @@ namespace SimpleBank.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -46,6 +43,19 @@ namespace SimpleBank.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        [AllowAnonymous]
+        public IActionResult NotFound()
+        {
+            return View();
+        }
+
+        [Authorize(Roles ="Admin")]
+        public IActionResult VeryImportant()
+        {
+            return View();
         }
     }
 }
